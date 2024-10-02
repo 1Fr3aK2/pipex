@@ -32,7 +32,7 @@ static int	count_word(const char *str, char c)
 	{
 		while (str[i] && str[i] == c)
 			i++;
-		if (str[i]) 
+		if (str[i])
 			words++;
 		while (str[i] && str[i] != c)
 			i++;
@@ -79,11 +79,11 @@ char	**ft_split(char const *s, char c)
 		return (NULL);
 	while (*s)
 	{
-		while (*s && *s == c) 
+		while (*s && *s == c)
 			s++;
-		if (*s) 
+		if (*s)
 		{
-			dest[i] = word_aloc(s, c); 
+			dest[i] = word_aloc(s, c);
 			if (!dest[i++])
 				return (free_str(dest, i - 1), NULL);
 		}

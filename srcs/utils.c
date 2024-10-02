@@ -6,7 +6,7 @@
 /*   By: raamorim <raamorim@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/11 20:00:33 by decortejohn       #+#    #+#             */
-/*   Updated: 2024/10/02 12:39:00 by raamorim         ###   ########.fr       */
+/*   Updated: 2024/10/02 12:44:01 by raamorim         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,7 +34,6 @@ int	ft_strcmp(char *s1, char *s2)
 	}
 	return (0);
 }
-
 
 void	ft_free_tab(char **tab)
 {

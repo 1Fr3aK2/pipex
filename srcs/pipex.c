@@ -6,10 +6,9 @@
 /*   By: raamorim <raamorim@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/02 12:38:51 by raamorim          #+#    #+#             */
-/*   Updated: 2024/10/02 12:38:54 by raamorim         ###   ########.fr       */
+/*   Updated: 2024/10/02 12:44:56 by raamorim         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
-
 
 #include "../includes/pipex.h"
 
@@ -34,7 +33,7 @@ void	child_process(char *argv[], int *fd, char **env)
 	int		infile;
 
 	infile = open(argv[1], O_RDONLY, 0777);
-	if(infile == -1)
+	if (infile == -1)
 	{
 		ft_printf("Error opening the file\n");
 		exit(4);
@@ -50,7 +49,7 @@ void	parent_process(char *argv[], int *fd, char **env)
 	int		outfile;
 
 	outfile = open(argv[4], O_WRONLY | O_CREAT | O_TRUNC, 0777);
-	if(outfile == -1)
+	if (outfile == -1)
 	{
 		ft_printf("Error opening the file\n");
 		exit(5);

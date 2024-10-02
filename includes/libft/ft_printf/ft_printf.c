@@ -78,4 +78,3 @@ int	ft_printf(const char *str, ...)
 	va_end(ap);
 	return (counter);
 }
-
