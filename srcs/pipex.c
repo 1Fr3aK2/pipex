@@ -6,7 +6,7 @@
 /*   By: raamorim <raamorim@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/02 12:38:51 by raamorim          #+#    #+#             */
-/*   Updated: 2024/10/02 12:44:56 by raamorim         ###   ########.fr       */
+/*   Updated: 2024/10/02 15:13:32 by raamorim         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,12 +18,12 @@ void	exec(char *argv, char **env)
 	char	*path;
 
 	cmd = ft_split(argv, ' ');
-	path = get_path(cmd[0], env);
+	path = find_path(cmd[0], env);
 	if (execve(path, cmd, env) == -1)
 	{
 		ft_putstr_fd("pipex: command not found: ", 2);
 		ft_putendl_fd(cmd[0], 2);
-		ft_free_tab(cmd);
+		ft_free(cmd);
 		exit(6);
 	}
 }

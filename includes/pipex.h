@@ -6,7 +6,7 @@
 /*   By: raamorim <raamorim@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/02 12:39:38 by raamorim          #+#    #+#             */
-/*   Updated: 2024/10/02 12:43:06 by raamorim         ###   ########.fr       */
+/*   Updated: 2024/10/02 16:29:10 by raamorim         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,11 +24,9 @@
 # include "../includes/libft/libft.h"
 # include "../includes/libft/ft_printf/ft_printf.h"
 
-char	*get_env(char *name, char **env);
-char	*get_path(char *cmd, char **env);
+char	*get_env(char *variable_name, char **env);
+char	*find_path( char *cmd, char **env);
 void	exec(char *argv, char **env);
-void	ft_free_tab(char **tab);
-void	handle_errors(int errors);
-int		ft_strcmp(char *s1, char *s2);
-
+void	ft_free(char **cmd);
+void	handle_errors(int error);
 #endif

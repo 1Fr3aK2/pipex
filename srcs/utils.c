@@ -6,7 +6,7 @@
 /*   By: raamorim <raamorim@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/11 20:00:33 by decortejohn       #+#    #+#             */
-/*   Updated: 2024/10/02 12:44:01 by raamorim         ###   ########.fr       */
+/*   Updated: 2024/10/02 16:27:09 by raamorim         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,83 +19,69 @@ void	handle_errors(int error)
 	exit(1);
 }
 
-int	ft_strcmp(char *s1, char *s2)
+void	ft_free(char **cmd)
 {
 	size_t	i;
 
 	i = 0;
-	if (!s1)
-		return (1);
-	while (s1[i] || s2[i])
+	while (cmd[i])
 	{
-		if (s1[i] != s2[i])
-			return (s1[i] - s2[i]);
+		free(cmd[i]);
 		i++;
 	}
-	return (0);
+	free(cmd);
 }
 
-void	ft_free_tab(char **tab)
-{
-	size_t	i;
-
-	i = 0;
-	while (tab[i])
-	{
-		free(tab[i]);
-		i++;
-	}
-	free(tab);
-}
-
-char	*get_env(char *name, char **env)
+/* variable name = PATH=
+value = return = /home/raamorim/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin */
+char	*get_env(char *variable_name, char **env)
 {
 	int		i;
-	int		j;
-	char	*sub;
-
+	int		len;
+	char	*value; // tudo o que vem depois do nome da variavel ex : PATH=;
+	if (!variable_name)
+		return (NULL);
+	len = ft_strlen(variable_name);
 	i = 0;
 	while (env[i])
 	{
-		j = 0;
-		while (env[i][j] && env[i][j] != '=')
-			j++;
-		sub = ft_substr(env[i], 0, j);
-		if (ft_strcmp(sub, name) == 0)
+		if (ft_strncmp(env[i], variable_name, len) == 0 && env[i][len] == '=')
 		{
-			free(sub);
-			return (env[i] + j + 1);
+			value = ft_strchr(env[i], '=');
+			if (!value)
+				return (NULL);
+			else
+				return (value + 1);
 		}
-		free(sub);
 		i++;
 	}
 	return (NULL);
 }
 
-char	*get_path(char *cmd, char **env)
+char	*find_path( char *cmd, char **env)
 {
+	char	**cmd_flags;// separa o comando e as flags caso tenha 
+	char	**path;//armazena os diretorios extraidos por path;
+	char	*correct_path;//caminho do executavel(cmd);
+	char	*directory;//armazena parte dos diretorios enquanto procura o correto;
 	int		i;
-	char	*exec;
-	char	**allpath;
-	char	*path_part;
-	char	**s_cmd;
-
-	i = -1;
-	allpath = ft_split(get_env("PATH", env), ':');
-	s_cmd = ft_split(cmd, ' ');
-	while (allpath[++i])
+	
+	i = 0;
+	path = ft_split(get_env("PATH", env), ':');
+	cmd_flags = ft_split(cmd, ' ');
+	while (path[i++])
 	{
-		path_part = ft_strjoin(allpath[i], "/");
-		exec = ft_strjoin(path_part, s_cmd[0]);
-		free(path_part);
-		if (access(exec, F_OK | X_OK) == 0)
+		directory = ft_strjoin(path[i], "/"); //Combina o diretório atual com (/) para formar a base do caminho do executável.
+		correct_path = ft_strjoin(directory, *cmd_flags); //adiciona o comando ao diretorio 
+		free(directory);
+		if (access(correct_path, F_OK | X_OK) == 0) //verifica se existe o caminho e se e executavel
 		{
-			ft_free_tab(s_cmd);
-			return (exec);
+			ft_free(cmd_flags);
+			return (correct_path);
 		}
-		free(exec);
+		free(correct_path);
 	}
-	ft_free_tab(allpath);
-	ft_free_tab(s_cmd);
-	return (cmd);
+	ft_free(path); //liberta a memoria alocada 
+	ft_free(cmd_flags); //liberta a memoria alocada
+	return (correct_path); // se nenhum caminho for encontrado retorna o comando passado;
 }
