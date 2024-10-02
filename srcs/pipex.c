@@ -3,12 +3,13 @@
 /*                                                        :::      ::::::::   */
 /*   pipex.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: decortejohn <decortejohn@student.42.fr>    +#+  +:+       +#+        */
+/*   By: raamorim <raamorim@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2021/10/30 14:09:15 by jdecorte          #+#    #+#             */
-/*   Updated: 2022/02/12 10:54:24 by decortejohn      ###   ########.fr       */
+/*   Created: 2024/10/02 12:38:51 by raamorim          #+#    #+#             */
+/*   Updated: 2024/10/02 12:38:54 by raamorim         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
+
 
 #include "../includes/pipex.h"
 
