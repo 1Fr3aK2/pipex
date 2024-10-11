@@ -39,8 +39,10 @@ void	child_process(char *argv[], int *fd, char **env)
 		exit(4);
 	}
 	dup2(infile, STDIN_FILENO);
+	close(infile);
 	dup2(fd[1], STDOUT_FILENO);
 	close(fd[0]);
+	close(fd[1]);
 	exec(argv[2], env);
 }
 
@@ -55,8 +57,10 @@ void	parent_process(char *argv[], int *fd, char **env)
 		exit(5);
 	}
 	dup2(outfile, STDOUT_FILENO);
+	close(outfile);
 	dup2(fd[0], STDIN_FILENO);
 	close(fd[1]);
+	close(fd[0]);
 	exec(argv[3], env);
 }
 
@@ -80,6 +84,6 @@ int	main(int argc, char *argv[], char **env)
 	}
 	if (pid == 0)
 		child_process(argv, fd, env);
-	waitpid(pid, NULL, 0);
+	/* waitpid(pid, NULL, 0); */
 	parent_process(argv, fd, env);
 }

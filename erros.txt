@@ -1,0 +1,18 @@
+Erro 1 :
+./pipex infilea ls -l lo outfile
+Error opening the file
+[2]    128685 segmentation fault (core dumped)  ./pipex infilea ls -l lo outfile
+
+
+Esperado :
+Error: No such file or directory
+
+ou 
+
+zsh: command not found: lo
+lo: command not found	
+
+
+quando nao encontra o comando retornar uma msg de erro 
+
+Erro 2:
