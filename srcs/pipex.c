@@ -54,7 +54,7 @@ void	parent_process(char *argv[], int *fd, char **env)
 	outfile = open(argv[4], O_WRONLY | O_CREAT | O_TRUNC, 0777);
 	if (outfile == -1)
 	{
-		ft_printf("Error opening the file\n");
+		ft_putstr_fd("Error opening/creating the file\n", 2);
 		exit(5);
 	}
 	dup2(outfile, STDOUT_FILENO);
@@ -74,13 +74,13 @@ int	main(int argc, char *argv[], char **env)
 		handle_errors(1);
 	if (pipe(fd) == -1)
 	{
-		ft_printf("Error creating the pipe\n");
+		ft_putstr_fd("Error creating the pipe\n", 2);
 		exit(2);
 	}
 	pid = fork();
 	if (pid == -1)
 	{
-		ft_printf("Error with fork\n");
+		ft_putstr_fd("Error with fork\n", 2);
 		exit(3);
 	}
 	if (pid == 0)
