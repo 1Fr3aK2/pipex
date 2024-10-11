@@ -39,6 +39,7 @@ char	*get_env(char *variable_name, char **env)
 	int		i;
 	int		len;
 	char	*value; // tudo o que vem depois do nome da variavel ex : PATH=;
+	
 	if (!variable_name)
 		return (NULL);
 	len = ft_strlen(variable_name);
@@ -58,30 +59,46 @@ char	*get_env(char *variable_name, char **env)
 	return (NULL);
 }
 
-char	*find_path( char *cmd, char **env)
+char	*find_path(char *cmd, char **envp)
 {
-	char	**cmd_flags;// separa o comando e as flags caso tenha 
-	char	**path;//armazena os diretorios extraidos por path;
-	char	*correct_path;//caminho do executavel(cmd);
-	char	*directory;//armazena parte dos diretorios enquanto procura o correto;
+	char	**cmd_flags;    // Separação do comando e flags
+	char	**paths;        // Diretórios extraídos da variável PATH
+	char	*correct_path;  // Caminho do executável (cmd)
+	char	*directory;     // Caminho temporário para combinar diretórios
 	int		i;
-	
-	i = 0;
-	path = ft_split(get_env("PATH", env), ':');
+
+	// Obter os diretórios da variável PATH
+	paths = ft_split(get_env("PATH", envp), ':');
+	if (!paths) // Se não encontrar a variável PATH, retorne NULL
+		return (NULL);
+	// Separar o comando e as flags, se houver
 	cmd_flags = ft_split(cmd, ' ');
-	while (path[i++])
+	if (!cmd_flags || !cmd_flags[0]) // Se o comando for inválido, libere a memória e retorne NULL
 	{
-		directory = ft_strjoin(path[i], "/"); //Combina o diretório atual com (/) para formar a base do caminho do executável.
-		correct_path = ft_strjoin(directory, *cmd_flags); //adiciona o comando ao diretorio 
+		ft_free(paths);
+		ft_free(cmd_flags);
+		return (NULL);
+	}
+	// Percorrer os diretórios da variável PATH
+	i = 0;
+	while (paths[i])
+	{
+		// Combina o diretório com o comando
+		directory = ft_strjoin(paths[i], "/");
+		correct_path = ft_strjoin(directory, cmd_flags[0]);
 		free(directory);
-		if (access(correct_path, F_OK | X_OK) == 0) //verifica se existe o caminho e se e executavel
+		// Verificar se o caminho é válido e executável
+		if (access(correct_path, F_OK | X_OK) == 0)
 		{
+			ft_free(paths);
 			ft_free(cmd_flags);
 			return (correct_path);
 		}
 		free(correct_path);
+		i++;
 	}
-	ft_free(path); //liberta a memoria alocada 
-	ft_free(cmd_flags); //liberta a memoria alocada
-	return (correct_path); // se nenhum caminho for encontrado retorna o comando passado;
+	// Se não encontrar o executável, libere a memória alocada
+	ft_free(paths);
+	ft_free(cmd_flags);
+	return (NULL); // Retorna NULL se nenhum caminho for encontrado
 }
