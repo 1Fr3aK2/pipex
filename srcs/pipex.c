@@ -21,8 +21,8 @@ void	exec(char *argv, char **env)
 	path = find_path(cmd[0], env);
 	if (execve(path, cmd, env) == -1)
 	{
-		ft_putstr_fd("pipex: command not found: ", 2);
-		ft_putendl_fd(cmd[0], 2);
+		ft_putstr_fd(cmd[0], 2);
+		ft_putstr_fd(": command not found\n", 2);
 		ft_free(cmd);
 		exit(6);
 	}
@@ -35,7 +35,8 @@ void	child_process(char *argv[], int *fd, char **env)
 	infile = open(argv[1], O_RDONLY, 0777);
 	if (infile == -1)
 	{
-		ft_printf("Error opening the file\n");
+		ft_putstr_fd(argv[1], 2);
+		ft_putstr_fd(": No such file or directory\n", 2);
 		exit(4);
 	}
 	dup2(infile, STDIN_FILENO);
