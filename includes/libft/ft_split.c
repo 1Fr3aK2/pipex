@@ -26,6 +26,8 @@ static int	count_word(const char *str, char c)
 	int	i;
 	int	words;
 
+	if(!str)
+		return (-1);
 	i = 0;
 	words = 0;
 	while (str[i])
@@ -47,6 +49,8 @@ static char	*word_aloc(const char *str, char c)
 	int		word_len;
 	int		i;
 
+	if(!str)
+		return (NULL);
 	i = -1;
 	word_len = 0;
 	while (str[word_len] && str[word_len] != c)
@@ -74,6 +78,8 @@ char	**ft_split(char const *s, char c)
 	int		i;
 
 	i = 0;
+	if(!s)
+		return (NULL);
 	dest = (char **)malloc((count_word(s, c) + 1) * sizeof(char *));
 	if (!dest)
 		return (NULL);
