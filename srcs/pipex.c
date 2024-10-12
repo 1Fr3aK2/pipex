@@ -99,6 +99,5 @@ int	main(int argc, char *argv[], char **env)
 	}
 	if (pid == 0)
 		child_process(argv, fd, env);
-	waitpid(pid, NULL, WNOHANG);
 	parent_process(argv, fd, env);
 }
