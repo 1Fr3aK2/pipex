@@ -15,7 +15,7 @@
 void	handle_errors(int error)
 {
 	if (error == 1)
-		ft_printf("./pipex infile cmd cmd outfile\n", 2);
+		ft_putstr_fd("./pipex infile cmd cmd outfile\n", 2);
 	exit(1);
 }
 

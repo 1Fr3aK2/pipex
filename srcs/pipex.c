@@ -18,12 +18,26 @@ void	exec(char *argv, char **env)
 	char	*path;
 
 	cmd = ft_split(argv, ' ');
+	if(!cmd)
+	{
+		ft_free(cmd);
+		exit(7);
+	}
 	path = find_path(cmd[0], env);
+	if (!path)
+	{
+		ft_putstr_fd(cmd[0], 2);
+		ft_putstr_fd(": command not found\n", 2);
+		free(path);
+		ft_free(cmd);
+		exit(8);
+	}
 	if (execve(path, cmd, env) == -1)
 	{
 		ft_putstr_fd(cmd[0], 2);
 		ft_putstr_fd(": command not found\n", 2);
 		ft_free(cmd);
+		free(path);
 		exit(6);
 	}
 }
@@ -85,6 +99,6 @@ int	main(int argc, char *argv[], char **env)
 	}
 	if (pid == 0)
 		child_process(argv, fd, env);
-	/* waitpid(pid, NULL, 0); */
+	waitpid(pid, NULL, WNOHANG);
 	parent_process(argv, fd, env);
 }
