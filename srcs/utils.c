@@ -73,10 +73,9 @@ char	*find_path(char *cmd, char **envp)
 		return (NULL);
 	// Separar o comando e as flags, se houver
 	cmd_flags = ft_split(cmd, ' ');
-	if (!cmd_flags || !cmd_flags[0]) // Se o comando for inválido, libere a memória e retorne NULL
+	if (!cmd_flags) // Se o comando for inválido, libere a memória e retorne NULL
 	{
 		ft_free(paths);
-		ft_free(cmd_flags);
 		return (NULL);
 	}
 	// Percorrer os diretórios da variável PATH
