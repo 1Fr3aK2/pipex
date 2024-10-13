@@ -53,9 +53,17 @@ void	child_process(char *argv[], int *fd, char **env)
 		ft_putstr_fd(": No such file or directory\n", 2);
 		exit(9);
 	}
-	dup2(infile, STDIN_FILENO);
+	if(dup2(infile, STDIN_FILENO) == -1)
+	{
+		ft_putstr_fd("Error duplicating file descriptor\n", 2);
+		exit(10);
+	}
 	close(infile);
-	dup2(fd[1], STDOUT_FILENO);
+	if(dup2(fd[1], STDOUT_FILENO) == -1)
+	{
+		ft_putstr_fd("Error duplicating file descriptor\n", 2);
+		exit(11);
+	}
 	close(fd[0]);
 	close(fd[1]);
 	exec(argv[2], env);
@@ -71,11 +79,19 @@ void	parent_process(char *argv[], int *fd, char **env)
 	if (outfile == -1)
 	{
 		ft_putstr_fd("Error opening/creating the file\n", 2);
-		exit(11);
+		exit(12);
 	}
-	dup2(outfile, STDOUT_FILENO);
+	if(dup2(outfile, STDOUT_FILENO) == -1)
+	{
+		ft_putstr_fd("Error duplicating file descriptor\n", 2);
+		exit(13);
+	}
 	close(outfile);
-	dup2(fd[0], STDIN_FILENO);
+	if(dup2(fd[0], STDIN_FILENO) == -1)
+	{
+		ft_putstr_fd("Error duplicating file descriptor\n", 2);
+		exit(14);
+	}
 	close(fd[1]);
 	close(fd[0]);
 	exec(argv[3], env);
