@@ -5,8 +5,8 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: raamorim <raamorim@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/10/14 13:20:50 by raamorim          #+#    #+#             */
-/*   Updated: 2024/10/14 13:51:30 by raamorim         ###   ########.fr       */
+/*   Created: 2024/10/14 14:01:01 by raamorim          #+#    #+#             */
+/*   Updated: 2024/10/14 14:04:22 by raamorim         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,7 @@ void	exec(char *argv, char **env)
 		exit(4);
 	cmd = ft_split(argv, ' ');
 	if (!cmd)
-		exit (5);
+		exit(5);
 	path = find_path(cmd[0], env);
 	if (!path)
 	{
