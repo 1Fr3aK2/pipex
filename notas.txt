@@ -1,0 +1,24 @@
+verificar numero de argumentos;
+Verificar here_doc ;
+se 1 = here_doc
+
+abrir outfile;
+
+
+se o 1 nao for here_doc 
+iterador no 2 argumento de argv, argv[2], primeiro comando no terminal;
+abrir infile e outfile;
+redirecionar o stdin para o infile;
+
+
+
+argc -7
+argv -> 6
+percorrer ate ao penultimo comando
+ultimo comando - argc 5;
+
+Resumo
+redirecionar stdin para outfile
+o primeiro comando tem de ser executado incialmente 
+executar todos os comandos a partir do segundo, e criar novos processos ate ao ultimo comandoquando estivermos no ultimo comando sair do processo filho
+reddirecionar o stdout para outfile e executar o comando com exec
