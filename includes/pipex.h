@@ -6,7 +6,7 @@
 /*   By: raamorim <raamorim@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/02 12:39:38 by raamorim          #+#    #+#             */
-/*   Updated: 2024/10/02 16:29:10 by raamorim         ###   ########.fr       */
+/*   Updated: 2024/10/14 13:34:01 by raamorim         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,7 +26,7 @@
 
 char	*get_env(char *variable_name, char **env);
 char	*find_path( char *cmd, char **env);
-void	exec(char *argv, char **env);
+/* void	exec(char *argv, char **env); */
 void	ft_free(char **cmd);
 void	handle_errors(int error);
 #endif

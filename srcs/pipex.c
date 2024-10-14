@@ -5,8 +5,8 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: raamorim <raamorim@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/10/02 12:38:51 by raamorim          #+#    #+#             */
-/*   Updated: 2024/10/02 15:13:32 by raamorim         ###   ########.fr       */
+/*   Created: 2024/10/14 13:20:57 by raamorim          #+#    #+#             */
+/*   Updated: 2024/10/14 13:46:12 by raamorim         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,9 +18,9 @@ void	exec(char *argv, char **env)
 	char	*path;
 
 	if (!argv || !env)
-		exit(4);	
+		exit(4);
 	cmd = ft_split(argv, ' ');
-	if(!cmd)
+	if (!cmd)
 		exit(5);
 	path = find_path(cmd[0], env);
 	if (!path)
@@ -53,13 +53,13 @@ void	child_process(char *argv[], int *fd, char **env)
 		ft_putstr_fd(": No such file or directory\n", 2);
 		exit(9);
 	}
-	if(dup2(infile, STDIN_FILENO) == -1)
+	if (dup2(infile, STDIN_FILENO) == -1)
 	{
 		ft_putstr_fd("Error duplicating file descriptor\n", 2);
 		exit(10);
 	}
 	close(infile);
-	if(dup2(fd[1], STDOUT_FILENO) == -1)
+	if (dup2(fd[1], STDOUT_FILENO) == -1)
 	{
 		ft_putstr_fd("Error duplicating file descriptor\n", 2);
 		exit(11);
@@ -73,7 +73,7 @@ void	parent_process(char *argv[], int *fd, char **env)
 {
 	int		outfile;
 
-	if(!argv || !fd || !env)
+	if (!argv || !fd || !env)
 		exit(10);
 	outfile = open(argv[4], O_WRONLY | O_CREAT | O_TRUNC, 0777);
 	if (outfile == -1)
@@ -81,13 +81,13 @@ void	parent_process(char *argv[], int *fd, char **env)
 		ft_putstr_fd("Error opening/creating the file\n", 2);
 		exit(12);
 	}
-	if(dup2(outfile, STDOUT_FILENO) == -1)
+	if (dup2(outfile, STDOUT_FILENO) == -1)
 	{
 		ft_putstr_fd("Error duplicating file descriptor\n", 2);
 		exit(13);
 	}
 	close(outfile);
-	if(dup2(fd[0], STDIN_FILENO) == -1)
+	if (dup2(fd[0], STDIN_FILENO) == -1)
 	{
 		ft_putstr_fd("Error duplicating file descriptor\n", 2);
 		exit(14);
@@ -122,6 +122,6 @@ int	main(int argc, char *argv[], char **env)
 	}
 	if (pid == 0)
 		child_process(argv, fd, env);
-	waitpid(pid, NULL, 0);
 	parent_process(argv, fd, env);
+	waitpid(pid, NULL, 0);
 }
