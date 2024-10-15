@@ -40,12 +40,10 @@ void	exec(char *argv, char **env)
 	}
 }
 
-void	child_process(char *argv[], int *fd, char **env)
+void	first_child(char *argv[], int *fd, char **env)
 {
 	int		infile;
 
-	if (!argv || !fd || !env)
-		exit(8);
 	infile = open(argv[1], O_RDONLY, 0777);
 	if (infile == -1)
 	{
@@ -53,60 +51,44 @@ void	child_process(char *argv[], int *fd, char **env)
 		ft_putstr_fd(": No such file or directory\n", 2);
 		exit(9);
 	}
-	if (dup2(infile, STDIN_FILENO) == -1)
+	if (dup2(infile, STDIN_FILENO) == -1 || dup2(fd[1], STDOUT_FILENO) == -1)
 	{
 		ft_putstr_fd("Error duplicating file descriptor\n", 2);
 		exit(10);
 	}
 	close(infile);
-	if (dup2(fd[1], STDOUT_FILENO) == -1)
-	{
-		ft_putstr_fd("Error duplicating file descriptor\n", 2);
-		exit(11);
-	}
 	close(fd[0]);
 	close(fd[1]);
 	exec(argv[2], env);
 }
 
-void	parent_process(char *argv[], int *fd, char **env)
+void	second_child(char *argv[], int *fd, char **env)
 {
 	int		outfile;
 
-	if (!argv || !fd || !env)
-		exit(10);
 	outfile = open(argv[4], O_WRONLY | O_CREAT | O_TRUNC, 0777);
 	if (outfile == -1)
 	{
 		ft_putstr_fd("Error opening/creating the file\n", 2);
 		exit(12);
 	}
-	if (dup2(outfile, STDOUT_FILENO) == -1)
+	if (dup2(fd[0], STDIN_FILENO) == -1 || dup2(outfile, STDOUT_FILENO) == -1)
 	{
 		ft_putstr_fd("Error duplicating file descriptor\n", 2);
 		exit(13);
 	}
 	close(outfile);
-	if (dup2(fd[0], STDIN_FILENO) == -1)
-	{
-		ft_putstr_fd("Error duplicating file descriptor\n", 2);
-		exit(14);
-	}
-	close(fd[1]);
 	close(fd[0]);
+	close(fd[1]);
 	exec(argv[3], env);
 }
 
 int	main(int argc, char *argv[], char **env)
 {
 	int		fd[2];
-	pid_t	pid;
+	pid_t	first_pid;
+	pid_t	second_pid;
 
-	if (!env || !(*env))
-	{
-		ft_putstr_fd("Error with environment variables\n", 2);
-		exit(1);
-	}
 	if (argc != 5)
 		handle_errors(2);
 	if (pipe(fd) == -1)
@@ -114,19 +96,24 @@ int	main(int argc, char *argv[], char **env)
 		ft_putstr_fd("Error creating the pipe\n", 2);
 		exit(2);
 	}
-	pid = fork();
-	if (pid == -1)
+	first_pid = fork();
+	if (first_pid == -1)
 	{
 		ft_putstr_fd("Error with fork\n", 2);
 		exit(3);
 	}
-	if (pid == 0)
+	if (first_pid == 0)
+		first_child(argv, fd, env);
+	second_pid = fork();
+	if (second_pid == -1)
 	{
-		printf("child\n");
-		child_process(argv, fd, env);
+		ft_putstr_fd("Error with fork\n", 2);
+		exit(3);
 	}
-	waitpid(pid, NULL, 0);
-	printf("parent\n");
-	parent_process(argv, fd, env);	
+	if (second_pid == 0)
+		second_child(argv, fd, env);
+	close(fd[1]);
+	waitpid(first_pid, NULL, 0);
+	waitpid(second_pid, NULL, 0);
 	return (0);
 }

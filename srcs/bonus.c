@@ -81,6 +81,10 @@ void	child_process(char *argv, char **env)
 		waitpid(pid, NULL, 0);
 	}
 }
+void second_child(char *argv, char **env)
+{
+	
+}
 
 int	main(int argc, char *argv[], char **env)
 {
