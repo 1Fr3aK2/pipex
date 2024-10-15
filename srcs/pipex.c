@@ -121,7 +121,12 @@ int	main(int argc, char *argv[], char **env)
 		exit(3);
 	}
 	if (pid == 0)
+	{
+		printf("child\n");
 		child_process(argv, fd, env);
-	parent_process(argv, fd, env);
+	}
 	waitpid(pid, NULL, 0);
+	printf("parent\n");
+	parent_process(argv, fd, env);	
+	return (0);
 }
