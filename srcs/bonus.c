@@ -1,15 +1,3 @@
-/* ************************************************************************** */
-/*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   bonus.c                                            :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: raamorim <raamorim@student.42.fr>          +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/10/14 14:01:01 by raamorim          #+#    #+#             */
-/*   Updated: 2024/10/14 14:04:22 by raamorim         ###   ########.fr       */
-/*                                                                            */
-/* ************************************************************************** */
-
 #include "../includes/pipex.h"
 
 void	exec(char *argv, char **env)
@@ -39,80 +27,101 @@ void	exec(char *argv, char **env)
 		exit(7);
 	}
 }
-
-void	child_process(char *argv, char **env)
+void	child_process(char *argv, char **env, int infile, int write_fd)
 {
-	int		fd[2];
 	pid_t	pid;
-
-	if (!env || (!(*env)))
-		exit(3);
-	if (pipe(fd) == -1)
-	{
-		ft_putstr_fd("Error creating the pipe\n", 2);
-		exit(4);
-	}
+	
 	pid = fork();
-	if (pid < 0)
+	if (pid == -1)
 	{
-		ft_putstr_fd("Error with fork\n", 2);
-		exit(5);
+		ft_putstr_fd("Errorwith fork\n", 2);
+		exit(900);
 	}
 	if (pid == 0)
 	{
-		close(fd[0]);
-		if (dup2(fd[1], STDOUT_FILENO) == -1)
+		if (dup2(infile, STDIN_FILENO) == -1 || dup2(write_fd, STDOUT_FILENO) == -1)
 		{
-			ft_putstr_fd("Error duplicating file descriptor\n", 2);
-			exit(6);
+			ft_putstr_fd("Error with duplications\n", 2);
+			exit(900);
 		}
-		close(fd[1]);
+		close(infile);
+		close(write_fd);
 		exec(argv, env);
 	}
 	else
 	{
-		close(fd[1]);
-		if (dup2(fd[0], STDIN_FILENO) == -1)
-		{
-			ft_putstr_fd("Error duplicating file descriptor\n", 2);
-			exit(7);
-		}
-		close(fd[0]);
+		close(write_fd);
 		waitpid(pid, NULL, 0);
 	}
 }
-void second_child(char *argv, char **env)
+
+
+void	last_child(char *argv, char **env, int read_fd, int outfile)
 {
-	
+	pid_t	pid;
+
+	pid = fork();
+	if (pid == -1)
+	{
+		ft_putstr_fd("Errorwith fork\n", 2);
+		exit(900);
+	}
+	if (pid == 0)
+	{
+		if (dup2(read_fd, STDIN_FILENO) == -1 || dup2(outfile, STDOUT_FILENO) == -1)
+		{
+			ft_putstr_fd("Error with duplications\n", 2);
+			exit(900);
+		}
+		close(read_fd);
+		close(outfile);
+		exec(argv, env);
+	}
+	else
+	{
+		close(read_fd);
+		close(outfile);
+		waitpid(pid, NULL, 0);
+	}
 }
 
 int	main(int argc, char *argv[], char **env)
 {
-	int	infile;
-	int	outfile;
-	int	i;
+	int		i;
+	int		infile;  // Usado para o redirecionamento de entrada
+	int		outfile;
+	int		fd[2];
 
 	if (argc < 5)
 		handle_errors(2);
-	else
+	infile = open(argv[1], O_RDONLY, 0777);  // Abrir arquivo de entrada
+	if (infile == -1)
 	{
-		i = 2;
-		infile = open(argv[1], O_RDONLY, 0777);
-		outfile = open(argv[argc - 1], O_WRONLY | O_CREAT | O_TRUNC, 0777);
-		if (dup2(infile, STDIN_FILENO) == -1)
-		{
-			ft_putstr_fd("Error duplicating file descriptor\n", 2);
-			exit(2);
-		}
-		close(infile);
-		while (i < argc - 2)
-			child_process(argv[i++], env);
-		if (dup2(outfile, STDOUT_FILENO) == -1)
-		{
-			ft_putstr_fd("Error duplicating file descriptor\n", 2);
-			exit(3);
-		}
-		close(outfile);
-		exec(argv[argc - 2], env);
+		ft_putstr_fd(argv[1], 2);
+		ft_putstr_fd(": No such file or directory\n", 2);
+		exit(1);
 	}
+	i = 2;
+	while (i < argc - 2)
+	{
+		if (pipe(fd) == -1)
+		{
+			ft_putstr_fd("Error creating the pipe\n", 2);
+			exit(900);
+		}
+		child_process(argv[i], env, infile, fd[1]);
+		close(fd[1]);
+		infile = fd[0];
+		i++;
+	}
+	outfile = open(argv[argc - 1], O_WRONLY | O_CREAT | O_TRUNC, 0777);
+	if (outfile == -1)
+	{
+		ft_putstr_fd(argv[1], 2);
+		ft_putstr_fd(": No such file or directory\n", 2);
+	}
+	last_child(argv[i], env, infile, outfile);
+	close(infile);
+	close(outfile); 
+	return (0);
 }
