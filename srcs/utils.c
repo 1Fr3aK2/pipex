@@ -53,6 +53,11 @@ void handle_errors_plus(int error)
 		ft_putstr_fd("Waitpid failed\n", 2);
 		exit(7);
 	}
+	if (error == 8)
+	{
+		ft_putstr_fd("./pipex <file1> <cmd1> <cmd2> <...> <file2>\n", 2);
+		exit(8);
+	}
 
 }
 
@@ -76,7 +81,7 @@ value = return = /home/raamorim/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/us
 char	*get_env(char *variable_name, char **env)
 {
 	int		i;
-	int		len;
+	int			len;
 	char	*value; // tudo o que vem depois do nome da variavel ex : PATH=;
 	if (!variable_name || !env || !(*env))
 		return (NULL);
@@ -100,32 +105,28 @@ char	*get_env(char *variable_name, char **env)
 char	*find_path(char *cmd, char **env)
 {
 	int		i;
-	char	**cmd_flags;// Separação do comando e flags
-	char	**paths;// Diretórios extraídos da variável PATH
-	char	*correct_path;// Caminho do executável (cmd)
-	char	*directory;// Caminho temporário para combinar diretórios
+	char	**cmd_flags;
+	char	**paths;
+	char	*correct_path;
+	char	*directory;
+	
 	if (!cmd || !(*cmd) || !env || !(*env))
 		return (NULL);
-	// Obter os diretórios da variável PATH
 	paths = ft_split(get_env("PATH", env), ':');
-	if (!paths) // Se não encontrar a variável PATH, retorne NULL
+	if (!paths)
 		return (NULL);
-	// Separar o comando e as flags, se houver
 	cmd_flags = ft_split(cmd, ' ');
-	if (!cmd_flags) // Se o comando for inválido, libere a memória e retorne NULL
+	if (!cmd_flags)
 	{
 		ft_free(paths);
 		return (NULL);
 	}
-	// Percorrer os diretórios da variável PATH
 	i = 0;
 	while (paths[i])
 	{
-		// Combina o diretório com o comando
 		directory = ft_strjoin(paths[i], "/");
 		correct_path = ft_strjoin(directory, cmd_flags[0]);
 		free(directory);
-		// Verificar se o caminho é válido e executável
 		if (access(correct_path, F_OK | X_OK) == 0)
 		{
 			ft_free(paths);
@@ -135,8 +136,7 @@ char	*find_path(char *cmd, char **env)
 		free(correct_path);
 		i++;
 	}
-	// Se não encontrar o executável, libere a memória alocada
 	ft_free(paths);
 	ft_free(cmd_flags);
-	return (NULL); // Retorna NULL se nenhum caminho for encontrado
+	return (NULL);
 }

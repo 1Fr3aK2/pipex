@@ -6,17 +6,17 @@ void	exec(char *argv, char **env)
 	char	*path;
 
 	if (!argv || !env)
-		exit(4);
+		exit(9);
 	cmd = ft_split(argv, ' ');
-	if (!cmd)
-		exit(5);
+	if (!cmd || !cmd[0])
+		exit(10);
 	path = find_path(cmd[0], env);
 	if (!path)
 	{
 		ft_putstr_fd(cmd[0], 2);
 		ft_putstr_fd(": command not found\n", 2);
 		ft_free(cmd);
-		exit(6);
+		exit(11);
 	}
 	if (execve(path, cmd, env) == -1)
 	{
@@ -24,13 +24,15 @@ void	exec(char *argv, char **env)
 		ft_putstr_fd(": command not found\n", 2);
 		ft_free(cmd);
 		free(path);
-		exit(7);
+		exit(12);
 	}
 }
 void	childo_process(char *argv, char **env, int infile, int write_fd)
 {
 	pid_t	pid;
 	
+	if (!argv || !env || infile < 0 || write_fd < 0)
+        exit(9);
 	pid = fork();
 	if (pid == -1)
 		handle_errors(4, NULL);
@@ -54,6 +56,8 @@ void	last_child(char *argv, char **env, int read_fd, int outfile)
 {
 	pid_t	pid;
 
+	if (!argv || !env || read_fd < 0 || outfile < 0)
+        exit(9);
 	pid = fork();
 	if (pid == -1)
 		handle_errors(4, NULL);
@@ -82,7 +86,7 @@ int	main(int argc, char *argv[], char **env)
 	int		fd[2];
 
 	if (argc < 5)
-		handle_errors(1, argv);
+		handle_errors_plus(8);
 	infile = open(argv[1], O_RDONLY, 0777);  // Abrir arquivo de entrada
 	if (infile == -1)
 		handle_errors(2, argv);
@@ -90,7 +94,7 @@ int	main(int argc, char *argv[], char **env)
 	while (++i < argc - 2)
 	{
 		if (pipe(fd) == -1)
-			handle_errors(3, argv);
+			handle_errors(3, NULL);
 		childo_process(argv[i], env, infile, fd[1]);
 		close(fd[1]);
 		infile = fd[0];

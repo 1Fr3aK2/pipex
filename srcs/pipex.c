@@ -18,17 +18,17 @@ void	exec(char *argv, char **env)
 	char	*path;
 
 	if (!argv || !env)
-		exit(4);
+		exit(9);
 	cmd = ft_split(argv, ' ');
-	if (!cmd)
-		exit(5);
+	if (!cmd || !cmd[0])
+		exit(10);
 	path = find_path(cmd[0], env);
 	if (!path)
 	{
 		ft_putstr_fd(cmd[0], 2);
 		ft_putstr_fd(": command not found\n", 2);
 		ft_free(cmd);
-		exit(6);
+		exit(11);
 	}
 	if (execve(path, cmd, env) == -1)
 	{
@@ -36,7 +36,7 @@ void	exec(char *argv, char **env)
 		ft_putstr_fd(": command not found\n", 2);
 		ft_free(cmd);
 		free(path);
-		exit(7);
+		exit(12);
 	}
 }
 
@@ -44,6 +44,8 @@ void	first_child(char *argv[], int *fd, char **env)
 {
 	int		infile;
 
+	if (!argv || !fd || !env)
+        exit(9);
 	infile = open(argv[1], O_RDONLY, 0777);
 	if (infile == -1)
 		handle_errors(2, argv);
@@ -59,6 +61,8 @@ void	second_child(char *argv[], int *fd, char **env)
 {
 	int		outfile;
 
+	if (!argv || !fd || !env)
+        exit(4);
 	outfile = open(argv[4], O_WRONLY | O_CREAT | O_TRUNC, 0777);
 	if (outfile == -1)
 		handle_errors_plus(6);
@@ -77,7 +81,7 @@ int	main(int argc, char *argv[], char **env)
 	pid_t	second_pid;
 
 	if (argc != 5)
-		handle_errors(1, argv);
+		handle_errors(1, NULL);
 	if (pipe(fd) == -1)
 		handle_errors(3, NULL);
 	first_pid = fork();
