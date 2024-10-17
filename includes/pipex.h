@@ -30,4 +30,9 @@ void	exec(char *argv, char **env);
 void	ft_free(char **cmd);
 void	handle_errors(int error, char *argv[]);
 void    handle_errors_plus(int error);
+
+//bonus
+void	childo_process(char *argv, char **env, int infile, int write_fd);
+void	last_child(char *argv, char **env, int read_fd, int outfile);
+void	exec(char *argv, char **env);
 #endif

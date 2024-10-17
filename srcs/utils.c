@@ -19,7 +19,7 @@ void	handle_errors(int error, char *argv[])
 		ft_putstr_fd("./pipex infile cmd cmd outfile\n", 2);
 		exit(1);
 	}
-	if (error == 2)
+	if (error == 2 && argv)
 	{
 		ft_putstr_fd(argv[1], 2);
 		ft_putstr_fd(": No such file or directory\n", 2);

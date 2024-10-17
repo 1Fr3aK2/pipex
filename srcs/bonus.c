@@ -27,7 +27,7 @@ void	exec(char *argv, char **env)
 		exit(7);
 	}
 }
-void	child_process(char *argv, char **env, int infile, int write_fd)
+void	childo_process(char *argv, char **env, int infile, int write_fd)
 {
 	pid_t	pid;
 	
@@ -49,7 +49,6 @@ void	child_process(char *argv, char **env, int infile, int write_fd)
 			handle_errors_plus(7);
 	}
 }
-
 
 void	last_child(char *argv, char **env, int read_fd, int outfile)
 {
@@ -92,7 +91,7 @@ int	main(int argc, char *argv[], char **env)
 	{
 		if (pipe(fd) == -1)
 			handle_errors(3, argv);
-		child_process(argv[i], env, infile, fd[1]);
+		childo_process(argv[i], env, infile, fd[1]);
 		close(fd[1]);
 		infile = fd[0];
 	}
