@@ -122,6 +122,6 @@ int	main(int argc, char *argv[], char **env)
 	}
 	last_child(argv[i], env, infile, outfile);
 	close(infile);
-	close(outfile); 
+	close(outfile);
 	return (0);
 }

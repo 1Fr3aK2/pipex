@@ -46,16 +46,9 @@ void	first_child(char *argv[], int *fd, char **env)
 
 	infile = open(argv[1], O_RDONLY, 0777);
 	if (infile == -1)
-	{
-		ft_putstr_fd(argv[1], 2);
-		ft_putstr_fd(": No such file or directory\n", 2);
-		exit(9);
-	}
+		handle_errors(2, argv);
 	if (dup2(infile, STDIN_FILENO) == -1 || dup2(fd[1], STDOUT_FILENO) == -1)
-	{
-		ft_putstr_fd("Error duplicating file descriptor\n", 2);
-		exit(10);
-	}
+		handle_errors_plus(5);
 	close(infile);
 	close(fd[0]);
 	close(fd[1]);
@@ -68,15 +61,9 @@ void	second_child(char *argv[], int *fd, char **env)
 
 	outfile = open(argv[4], O_WRONLY | O_CREAT | O_TRUNC, 0777);
 	if (outfile == -1)
-	{
-		ft_putstr_fd("Error opening/creating the file\n", 2);
-		exit(12);
-	}
+		handle_errors_plus(6);
 	if (dup2(fd[0], STDIN_FILENO) == -1 || dup2(outfile, STDOUT_FILENO) == -1)
-	{
-		ft_putstr_fd("Error duplicating file descriptor\n", 2);
-		exit(13);
-	}
+		handle_errors_plus(5);
 	close(outfile);
 	close(fd[0]);
 	close(fd[1]);
@@ -90,30 +77,24 @@ int	main(int argc, char *argv[], char **env)
 	pid_t	second_pid;
 
 	if (argc != 5)
-		handle_errors(2);
+		handle_errors(1, argv);
 	if (pipe(fd) == -1)
-	{
-		ft_putstr_fd("Error creating the pipe\n", 2);
-		exit(2);
-	}
+		handle_errors(3, argv);
 	first_pid = fork();
 	if (first_pid == -1)
-	{
-		ft_putstr_fd("Error with fork\n", 2);
-		exit(3);
-	}
+		handle_errors(4, argv);
 	if (first_pid == 0)
 		first_child(argv, fd, env);
 	second_pid = fork();
 	if (second_pid == -1)
-	{
-		ft_putstr_fd("Error with fork\n", 2);
-		exit(3);
-	}
+		handle_errors(4, argv);
 	if (second_pid == 0)
 		second_child(argv, fd, env);
 	close(fd[1]);
-	waitpid(first_pid, NULL, 0);
-	waitpid(second_pid, NULL, 0);
+	close(fd[0]);
+	if(waitpid(first_pid, NULL, 0) == -1)
+		handle_errors_plus(7);	
+	if (waitpid(second_pid, NULL, 0) == -1)
+		handle_errors_plus(7);
 	return (0);
 }

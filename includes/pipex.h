@@ -25,8 +25,9 @@
 # include "../includes/libft/ft_printf/ft_printf.h"
 
 char	*get_env(char *variable_name, char **env);
-char	*find_path( char *cmd, char **env);
-/* void	exec(char *argv, char **env); */
+char	*find_path(char *cmd, char **env);
+void	exec(char *argv, char **env);
 void	ft_free(char **cmd);
-void	handle_errors(int error);
+void	handle_errors(int error, char *argv[]);
+void    handle_errors_plus(int error);
 #endif

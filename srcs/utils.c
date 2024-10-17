@@ -12,11 +12,48 @@
 
 #include "../includes/pipex.h"
 
-void	handle_errors(int error)
+void	handle_errors(int error, char *argv[])
 {
-	if (error == 2)
+	if (error == 1)
+	{
 		ft_putstr_fd("./pipex infile cmd cmd outfile\n", 2);
-	exit(1);
+		exit(1);
+	}
+	if (error == 2)
+	{
+		ft_putstr_fd(argv[1], 2);
+		ft_putstr_fd(": No such file or directory\n", 2);
+		exit(2);
+	}
+	if (error == 3)
+	{
+		ft_putstr_fd("Error creating the pipe\n", 2);
+		exit(3);
+	}
+	if (error == 4)
+	{
+		ft_putstr_fd("Error with fork\n", 2);
+		exit(4);
+	}
+}
+void handle_errors_plus(int error)
+{
+	if (error == 5)
+	{
+		ft_putstr_fd("Error duplicating file descriptor\n", 2);
+		exit(6);
+	}
+	if (error == 6)
+	{
+		ft_putstr_fd("Error opening/creating the file\n", 2);
+		exit(6);
+	}
+	if (error == 7)
+	{
+		ft_putstr_fd("Waitpid failed\n", 2);
+		exit(7);
+	}
+
 }
 
 void	ft_free(char **cmd)
