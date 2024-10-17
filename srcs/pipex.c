@@ -79,20 +79,20 @@ int	main(int argc, char *argv[], char **env)
 	if (argc != 5)
 		handle_errors(1, argv);
 	if (pipe(fd) == -1)
-		handle_errors(3, argv);
+		handle_errors(3, NULL);
 	first_pid = fork();
 	if (first_pid == -1)
-		handle_errors(4, argv);
+		handle_errors(4, NULL);
 	if (first_pid == 0)
 		first_child(argv, fd, env);
 	second_pid = fork();
 	if (second_pid == -1)
-		handle_errors(4, argv);
+		handle_errors(4, NULL);
 	if (second_pid == 0)
 		second_child(argv, fd, env);
 	close(fd[1]);
 	close(fd[0]);
-	if(waitpid(first_pid, NULL, 0) == -1)
+	if (waitpid(first_pid, NULL, 0) == -1)
 		handle_errors_plus(7);	
 	if (waitpid(second_pid, NULL, 0) == -1)
 		handle_errors_plus(7);

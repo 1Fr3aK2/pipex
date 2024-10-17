@@ -41,7 +41,7 @@ void handle_errors_plus(int error)
 	if (error == 5)
 	{
 		ft_putstr_fd("Error duplicating file descriptor\n", 2);
-		exit(6);
+		exit(5);
 	}
 	if (error == 6)
 	{

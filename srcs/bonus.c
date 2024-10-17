@@ -33,17 +33,11 @@ void	child_process(char *argv, char **env, int infile, int write_fd)
 	
 	pid = fork();
 	if (pid == -1)
-	{
-		ft_putstr_fd("Errorwith fork\n", 2);
-		exit(900);
-	}
+		handle_errors(4, NULL);
 	if (pid == 0)
 	{
 		if (dup2(infile, STDIN_FILENO) == -1 || dup2(write_fd, STDOUT_FILENO) == -1)
-		{
-			ft_putstr_fd("Error with duplications\n", 2);
-			exit(900);
-		}
+			handle_errors_plus(5);
 		close(infile);
 		close(write_fd);
 		exec(argv, env);
@@ -51,7 +45,8 @@ void	child_process(char *argv, char **env, int infile, int write_fd)
 	else
 	{
 		close(write_fd);
-		waitpid(pid, NULL, 0);
+		if (waitpid(pid, NULL, 0) == -1)
+			handle_errors_plus(7);
 	}
 }
 
@@ -62,17 +57,11 @@ void	last_child(char *argv, char **env, int read_fd, int outfile)
 
 	pid = fork();
 	if (pid == -1)
-	{
-		ft_putstr_fd("Errorwith fork\n", 2);
-		exit(900);
-	}
+		handle_errors(4, NULL);
 	if (pid == 0)
 	{
 		if (dup2(read_fd, STDIN_FILENO) == -1 || dup2(outfile, STDOUT_FILENO) == -1)
-		{
-			ft_putstr_fd("Error with duplications\n", 2);
-			exit(900);
-		}
+			handle_errors_plus(5);
 		close(read_fd);
 		close(outfile);
 		exec(argv, env);
@@ -81,7 +70,8 @@ void	last_child(char *argv, char **env, int read_fd, int outfile)
 	{
 		close(read_fd);
 		close(outfile);
-		waitpid(pid, NULL, 0);
+		if (waitpid(pid, NULL, 0) == -1)
+			handle_errors_plus(7);
 	}
 }
 
@@ -93,35 +83,23 @@ int	main(int argc, char *argv[], char **env)
 	int		fd[2];
 
 	if (argc < 5)
-		handle_errors(2);
+		handle_errors(1, argv);
 	infile = open(argv[1], O_RDONLY, 0777);  // Abrir arquivo de entrada
 	if (infile == -1)
-	{
-		ft_putstr_fd(argv[1], 2);
-		ft_putstr_fd(": No such file or directory\n", 2);
-		exit(1);
-	}
-	i = 2;
-	while (i < argc - 2)
+		handle_errors(2, argv);
+	i = 1;
+	while (++i < argc - 2)
 	{
 		if (pipe(fd) == -1)
-		{
-			ft_putstr_fd("Error creating the pipe\n", 2);
-			exit(900);
-		}
+			handle_errors(3, argv);
 		child_process(argv[i], env, infile, fd[1]);
 		close(fd[1]);
 		infile = fd[0];
-		i++;
 	}
 	outfile = open(argv[argc - 1], O_WRONLY | O_CREAT | O_TRUNC, 0777);
 	if (outfile == -1)
-	{
-		ft_putstr_fd(argv[1], 2);
-		ft_putstr_fd(": No such file or directory\n", 2);
-	}
+		handle_errors_plus(6);
 	last_child(argv[i], env, infile, outfile);
 	close(infile);
 	close(outfile);
-	return (0);
 }
