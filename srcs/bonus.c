@@ -92,6 +92,9 @@ int	main(int argc, char *argv[], char **env)
 	while (++i < argc - 2)
 		pid = childo_process(argv[i], env, &infile);
 	pid2 = last_child(argv[i], env, infile, argv[argc - 1]);
-	waitpid(pid, NULL, 0);
-	waitpid(pid2, NULL, 0);
+	if (waitpid(pid, NULL, 0) == -1)
+		handle_errors_plus(7);
+	if (waitpid(pid2, NULL, 0) == -1)
+		handle_errors_plus(7);
+	return (0);
 }
