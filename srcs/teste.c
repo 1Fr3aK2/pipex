@@ -80,6 +80,7 @@ int	main(int argc, char *argv[], char **env)
 {
 	int		infile;
 	int		i;
+    int     j;
 	pid_t	pid;
 	pid_t	pid2;
 
@@ -92,6 +93,9 @@ int	main(int argc, char *argv[], char **env)
 	while (++i < argc - 2)
 		pid = childo_process(argv[i], env, &infile);
 	pid2 = last_child(argv[i], env, infile, argv[argc - 1]);
+    while (j < argc - 2)
+        waitpid(pid, NULL, 0);
 	waitpid(pid, NULL, 0);
 	waitpid(pid2, NULL, 0);
+	return (0);
 }

@@ -32,7 +32,7 @@ void	handle_errors(int error, char *argv[]);
 void    handle_errors_plus(int error);
 
 //bonus
-void	childo_process(char *argv, char **env, int infile, int write_fd);
-void	last_child(char *argv, char **env, int read_fd, int outfile);
+pid_t	childo_process(char *argv, char **env, int *infile);
+pid_t	last_child(char *argv, char **env, int infile, char *outfile_path);
 void	exec(char *argv, char **env);
 #endif
