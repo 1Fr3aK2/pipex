@@ -62,6 +62,8 @@ char	*find_path(char *cmd, char **env)
 
 	if (!cmd || !env)
 		return (NULL);
+	if (access(cmd, F_OK | X_OK) == 0)
+		return (cmd);
 	paths = ft_split(get_env("PATH", env), ':');
 	if (!paths)
 		return (NULL);
@@ -74,4 +76,14 @@ char	*find_path(char *cmd, char **env)
 	path = check_paths(paths, cmd_flags[0]);
 	ft_free(cmd_flags);
 	return (path);
+}
+
+void	close_fds(int i)
+{
+	i = 3;
+	while (i < FOPEN_MAX)
+	{
+		close(i);
+		i++;
+	}
 }

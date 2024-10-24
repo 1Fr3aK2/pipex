@@ -24,18 +24,18 @@ FT_PRINT = $(FT_PRINTFDIR)/libftprintf.a
 all: $(NAME)
 
 $(NAME): $(OBJS) $(LIBFT) $(FT_PRINT)
-	$(CC) $(CFLAGS) -o $(NAME) $(OBJS) $(LIBFT) $(FT_PRINT)
+	@$(CC) $(CFLAGS) -o $(NAME) $(OBJS) $(LIBFT) $(FT_PRINT)
 	@echo "$(NAME) ready!"
 
 bonus: $(BONUS_NAME)
 
 $(BONUS_NAME): $(BONUS_OBJS) $(LIBFT) $(FT_PRINT)
-	$(CC) $(CFLAGS) -o $(BONUS_NAME) $(BONUS_OBJS) $(LIBFT) $(FT_PRINT)
+	@$(CC) $(CFLAGS) -o $(BONUS_NAME) $(BONUS_OBJS) $(LIBFT) $(FT_PRINT)
 	@echo "$(BONUS_NAME) ready!"
 
 $(OBJ_DIR)/%.o: $(SRCS_DIR)/%.c | $(OBJ_DIR)
 	@mkdir -p $(@D)
-	$(CC) $(CFLAGS) -c $< -o $@
+	@$(CC) $(CFLAGS) -c $< -o $@
 
 $(OBJ_DIR):
 	@mkdir -p $(OBJ_DIR)

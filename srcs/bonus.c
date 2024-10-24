@@ -112,5 +112,6 @@ int	main(int argc, char *argv[], char **env)
 	last_child(argv[i], env, infile, argv[argc - 1]);
 	while (wait(NULL) > 0)
 		;
+	close_fds(0);
 	return (0);
 }

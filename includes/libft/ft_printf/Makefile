@@ -15,10 +15,11 @@ OBJS = $(SRCS:.c=.o)
 all: $(NAME)
 
 .c.o:
-	$(CC) $(CFLAGS) -c $< -o $(<:.c=.o) 
+	@$(CC) $(CFLAGS) -c $< -o $(<:.c=.o) 
 
 $(NAME): $(OBJS) 
 	@$(COMPRESS) $(NAME) $(OBJS)
+	@echo "$(NAME) ready!"
 
 clean:
 	@$(RM) $(OBJS) 

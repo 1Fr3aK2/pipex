@@ -35,6 +35,7 @@ void	handle_errors_plus(int error);
 
 //bonus
 void	childo_process(char *argv, char **env, int *infile);
-void	last_child(char *argv, char **env, int infile, char *outfile_path);
+void	last_child(char *argv, char **env, int read_fd, char *outfile_path);
 void	exec(char *argv, char **env);
+void	close_fds(int i);
 #endif

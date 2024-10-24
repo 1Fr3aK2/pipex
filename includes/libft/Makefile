@@ -33,10 +33,12 @@ BONUS_OBJS = $(LST:.c=.o)
 all: $(NAME)
 
 .c.o:
-	$(CC) $(CFLAGS) -c $< -o $@
+	@$(CC) $(CFLAGS) -c $< -o $@
+
 
 $(NAME): $(OBJS) $(BONUS_OBJS)
 	@$(COMPRESS) $(NAME) $(OBJS) $(BONUS_OBJS)
+	@echo "$(NAME) ready!"
 
 clean:
 	@$(RM) $(OBJS) $(BONUS_OBJS)
